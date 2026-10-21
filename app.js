@@ -75,6 +75,8 @@ function updateAuditProgress() {
 function refreshProjectResults() {
   projectResults.replaceChildren();
   projectResultsStatus.hidden = false;
+  projectResults.closest(".project-chart").hidden = true;
+  document.querySelector(".project-chart-legend").hidden = true;
   try {
     const averages = new Map();
     let auditCount = 0;
@@ -101,7 +103,10 @@ function refreshProjectResults() {
       averages.set(record.projectId, result);
     }
 
-    const results = [...averages.values()].sort((left, right) => left.name.localeCompare(right.name, "fr", { sensitivity: "base" }));
+    const results = [...averages.values()].sort((left, right) =>
+      right.total / right.count - left.total / left.count ||
+      left.name.localeCompare(right.name, "fr", { sensitivity: "base" })
+    );
     if (results.length === 0) {
       projectResultsStatus.textContent = auditCount === 0
         ? "Aucun audit enregistré pour le moment."
@@ -110,29 +115,38 @@ function refreshProjectResults() {
     }
 
     projectResultsStatus.hidden = true;
+    projectResults.style.setProperty("--project-count", String(results.length));
+    projectResults.closest(".project-chart").hidden = false;
+    document.querySelector(".project-chart-legend").hidden = false;
     const formatPercent = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
     for (const result of results) {
       const average = result.total / result.count;
       const item = document.createElement("li");
-      item.className = "project-result";
-      const heading = document.createElement("div");
-      heading.className = "project-result-heading";
+      item.className = `project-result ${average >= 80 ? "is-high" : "is-low"}`;
       const name = document.createElement("span");
       name.className = "project-result-name";
       name.textContent = result.name;
       const detail = document.createElement("span");
       detail.className = "project-result-detail";
       detail.textContent = `${result.count} audit${result.count === 1 ? "" : "s"}`;
-      heading.append(name, detail);
-      const bar = document.createElement("progress");
-      bar.className = "project-result-bar";
-      bar.max = 100;
-      bar.value = average;
-      bar.setAttribute("aria-label", `Moyenne de conformité de ${result.name} : ${formatPercent.format(average)} %`);
+      const plot = document.createElement("div");
+      plot.className = "project-result-plot";
+      const barTrack = document.createElement("div");
+      barTrack.className = "project-result-track";
+      barTrack.setAttribute("role", "meter");
+      barTrack.setAttribute("aria-valuemin", "0");
+      barTrack.setAttribute("aria-valuemax", "100");
+      barTrack.setAttribute("aria-valuenow", String(Number(average.toFixed(1))));
+      barTrack.setAttribute("aria-label", `Moyenne de conformité de ${result.name} : ${formatPercent.format(average)} %, ${result.count} audit${result.count === 1 ? "" : "s"}`);
+      barTrack.style.setProperty("--bar-height", `${average}%`);
+      const fill = document.createElement("span");
+      fill.className = "project-result-bar";
       const value = document.createElement("strong");
       value.className = "project-result-value";
       value.textContent = `${formatPercent.format(average)} %`;
-      item.append(heading, bar, value);
+      barTrack.append(fill, value);
+      plot.append(barTrack);
+      item.append(plot, name, detail);
       projectResults.append(item);
     }
   } catch (error) {

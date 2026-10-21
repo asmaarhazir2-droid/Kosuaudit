@@ -88,7 +88,14 @@
           <h2 id="dashboard-title">Résultats par projet</h2>
           <p class="panel-hint">Moyenne des taux de conformité des audits enregistrés pour chaque projet. Les points NA sont exclus du score de chaque audit ; les audits sans point applicable ne sont pas comptés.</p>
           <p id="project-results-status" class="panel-hint" role="status" aria-live="polite" aria-atomic="true"></p>
-          <ol id="project-results" class="project-results" aria-label="Moyenne des audits par projet"></ol>
+          <div class="project-chart" role="group" aria-label="Graphique des résultats d'audit par projet">
+            <div class="project-chart-y-axis" aria-hidden="true"><span>100 %</span><span>50 %</span><span>0 %</span></div>
+            <div class="project-chart-scroll">
+              <ol id="project-results" class="project-results" aria-label="Moyenne des audits par projet"></ol>
+              <p class="project-chart-x-axis" aria-hidden="true">Projet</p>
+            </div>
+          </div>
+          <p class="project-chart-legend"><span class="project-chart-legend-high"></span>80 % et plus<span class="project-chart-legend-low"></span>Moins de 80 %</p>
         </section>
         <section class="workspace-panel" data-panel="Saisie" aria-labelledby="entry-title" hidden>
           <h2 id="entry-title">Saisie</h2>

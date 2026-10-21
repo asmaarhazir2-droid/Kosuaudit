@@ -7,6 +7,8 @@ const loginPage = document.querySelector("#login-page");
 const loginBranding = document.querySelector("#login-branding");
 const dashboardPage = document.querySelector("#dashboard-page");
 const dashboardStatus = document.querySelector("#dashboard-status");
+const projectResults = document.querySelector("#project-results");
+const projectResultsStatus = document.querySelector("#project-results-status");
 const navigationButtons = document.querySelectorAll("[data-section]");
 const status = document.querySelector("#status");
 const email = document.querySelector("#email");
@@ -68,6 +70,76 @@ function updateAuditProgress() {
   auditForm.querySelectorAll(".audit-question").forEach((group) => {
     group.classList.toggle("is-answered", Boolean(group.querySelector("input:checked")));
   });
+}
+
+function refreshProjectResults() {
+  projectResults.replaceChildren();
+  projectResultsStatus.hidden = false;
+  try {
+    const averages = new Map();
+    let auditCount = 0;
+    for (let index = 0; index < localStorage.length; index++) {
+      const key = localStorage.key(index);
+      if (!key?.startsWith("kosu-audit-record-v1:")) continue;
+      const record = JSON.parse(localStorage.getItem(key));
+      if (
+        !record || record.version !== 1 ||
+        typeof record.projectId !== "string" || !record.projectId ||
+        typeof record.project !== "string" || !record.project.trim() ||
+        !Array.isArray(record.answers) || record.answers.length !== checklist.length ||
+        !record.answers.every((answer) => auditChoices.includes(answer))
+      ) {
+        throw new Error(`Enregistrement d'audit invalide (${key}).`);
+      }
+      auditCount++;
+      const applicable = record.answers.filter((answer) => answer !== "NA");
+      if (applicable.length === 0) continue;
+      const score = applicable.filter((answer) => answer === "OK").length / applicable.length * 100;
+      const result = averages.get(record.projectId) ?? { name: record.project, total: 0, count: 0 };
+      result.total += score;
+      result.count++;
+      averages.set(record.projectId, result);
+    }
+
+    const results = [...averages.values()].sort((left, right) => left.name.localeCompare(right.name, "fr", { sensitivity: "base" }));
+    if (results.length === 0) {
+      projectResultsStatus.textContent = auditCount === 0
+        ? "Aucun audit enregistré pour le moment."
+        : "Aucun résultat calculable : les audits enregistrés ne contiennent aucun point applicable.";
+      return;
+    }
+
+    projectResultsStatus.hidden = true;
+    const formatPercent = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 1 });
+    for (const result of results) {
+      const average = result.total / result.count;
+      const item = document.createElement("li");
+      item.className = "project-result";
+      const heading = document.createElement("div");
+      heading.className = "project-result-heading";
+      const name = document.createElement("span");
+      name.className = "project-result-name";
+      name.textContent = result.name;
+      const detail = document.createElement("span");
+      detail.className = "project-result-detail";
+      detail.textContent = `${result.count} audit${result.count === 1 ? "" : "s"}`;
+      heading.append(name, detail);
+      const bar = document.createElement("progress");
+      bar.className = "project-result-bar";
+      bar.max = 100;
+      bar.value = average;
+      bar.setAttribute("aria-label", `Moyenne de conformité de ${result.name} : ${formatPercent.format(average)} %`);
+      const value = document.createElement("strong");
+      value.className = "project-result-value";
+      value.textContent = `${formatPercent.format(average)} %`;
+      item.append(heading, bar, value);
+      projectResults.append(item);
+    }
+  } catch (error) {
+    console.error("Lecture des résultats par projet impossible :", error);
+    projectResults.replaceChildren();
+    projectResultsStatus.textContent = "Impossible de lire les audits enregistrés. Vérifiez l'accès aux données locales et l'intégrité des audits.";
+  }
 }
 
 document.querySelector("#edit-audit-selection").addEventListener("click", () => {
@@ -176,6 +248,7 @@ auditForm.addEventListener("submit", (event) => {
     auditStatus.textContent = "Enregistrement impossible. Vérifiez les autorisations et l'espace de stockage. Vos réponses restent affichées pour réessayer.";
     return;
   }
+  refreshProjectResults();
   editingAuditSelection = false;
   for (const select of [entryProject, entrySegment, entryLine]) select.value = "";
   refreshStructure();
@@ -263,6 +336,7 @@ function loadStructure() {
   document.querySelector("#project-name").disabled = !structureLoaded;
   document.querySelector("#project-form button[type='submit']").disabled = !structureLoaded;
   refreshStructure();
+  refreshProjectResults();
 }
 
 for (const select of [entryProject, entrySegment, entryLine, settingsProject, settingsSegment, settingsLine]) {
@@ -508,7 +582,9 @@ excelFile.addEventListener("change", async () => {
 });
 
 window.addEventListener("storage", (event) => {
-  if (!dashboardPage.hidden && (event.key === storageKey || event.key === null)) loadStructure();
+  if (dashboardPage.hidden) return;
+  if (event.key === storageKey || event.key === null) loadStructure();
+  else if (event.key?.startsWith("kosu-audit-record-v1:")) refreshProjectResults();
 });
 
 const errors = {
@@ -552,6 +628,7 @@ navigationButtons.forEach((button) => {
     });
     clearError();
     panels.forEach((panel) => { panel.hidden = panel.dataset.panel !== button.dataset.section; });
+    if (button.dataset.section === "Tableau de bord") refreshProjectResults();
     if (button.dataset.section !== "Tableau de bord" && !["Saisie", "Réglages"].includes(button.dataset.section)) {
       dashboardStatus.textContent = `${button.dataset.section} : cette rubrique n'est pas encore configurée.`;
       dashboardStatus.hidden = false;
@@ -625,7 +702,7 @@ async function initializeAuth() {
         button.setAttribute("aria-pressed", String(selected));
       });
       clearError();
-      panels.forEach((panel) => { panel.hidden = true; });
+      panels.forEach((panel) => { panel.hidden = !connected || panel.dataset.panel !== "Tableau de bord"; });
       if (connected) loadStructure();
       else {
         resetPendingImport();

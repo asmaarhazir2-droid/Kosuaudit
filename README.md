@@ -72,9 +72,12 @@ Un avertissement apparait apres 15 secondes si le chargement reste en attente.
   dans localStorage (`kosu-audit-record-v1:` suivi d'un UUID), avec les noms,
   identifiants du projet / segment / ligne et la date d'enregistrement.
   Les audits precedents ne sont pas ecrases, uniquement dans ce navigateur et
-  communs aux comptes locaux. Aucune interface de consultation n'est encore
-  disponible. Les anciens enregistrements `kosu-audit-checklist-v1:` sont
-  conserves mais ne sont plus recharges dans le formulaire.
+  communs aux comptes locaux. Le tableau de bord affiche un resultat par projet :
+  la moyenne arithmetique des taux de conformite de ses audits enregistrables.
+  Les points NA sont exclus de chaque taux et les audits sans point applicable
+  ne sont pas comptes. Les donnees restent locales au navigateur. Les anciens
+  enregistrements `kosu-audit-checklist-v1:` sont conserves mais ne sont plus
+  recharges dans le formulaire.
   Apres un enregistrement reussi, la checklist se ferme et les listes Projet /
   Segment / Ligne reapparaissent avec les choix remis a zero et une confirmation.
   Un echec d'enregistrement laisse la checklist ouverte avec ses reponses.
@@ -120,7 +123,7 @@ Un avertissement apparait apres 15 secondes si le chargement reste en attente.
   donnees du navigateur supprime ces reglages. Les erreurs de stockage sont
   affichees explicitement sans ecraser des donnees illisibles.
 - Calendrier et corbeille ne sont pas encore configures. La corbeille ne supprime
-  aucune donnee. Le tableau de bord reste vide.
+  aucune donnee.
 - L'espace principal reste masque tant que Firebase n'a pas confirme la session.
   La deconnexion ramene a la page de connexion existante.
 - Restauration de la session geree par Firebase.

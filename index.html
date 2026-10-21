@@ -84,6 +84,12 @@
       </nav>
       <main class="dashboard-content" aria-label="Espace Kosu Audit">
         <p id="dashboard-status" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+        <section class="workspace-panel" data-panel="Tableau de bord" aria-labelledby="dashboard-title" hidden>
+          <h2 id="dashboard-title">Résultats par projet</h2>
+          <p class="panel-hint">Moyenne des taux de conformité des audits enregistrés pour chaque projet. Les points NA sont exclus du score de chaque audit ; les audits sans point applicable ne sont pas comptés.</p>
+          <p id="project-results-status" class="panel-hint" role="status" aria-live="polite" aria-atomic="true"></p>
+          <ol id="project-results" class="project-results" aria-label="Moyenne des audits par projet"></ol>
+        </section>
         <section class="workspace-panel" data-panel="Saisie" aria-labelledby="entry-title" hidden>
           <h2 id="entry-title">Saisie</h2>
           <p id="entry-hint" class="panel-hint">Configurez vos projets, segments et lignes ou machines dans Réglages.</p>

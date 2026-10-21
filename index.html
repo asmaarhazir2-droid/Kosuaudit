@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#103760">
+    <title>Connexion | OPEX LEONI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="bootstrap.js"></script>
+  </head>
+  <body>
+    <header id="login-branding" class="branding" aria-label="OPEX et LEONI">
+      <img class="opex-logo" src="opex_logo.png" alt="OPEX, Our way to Excellence">
+      <span class="leoni-logo">LEONI</span>
+    </header>
+
+    <main id="login-page" class="login-layout">
+      <div class="assistant-icon" aria-hidden="true">
+        <i class="bi bi-robot" aria-hidden="true"></i>
+      </div>
+
+      <section class="login-card" aria-labelledby="page-title">
+        <svg class="car-art" viewBox="0 0 600 230" fill="none" aria-hidden="true">
+          <path d="m-30 159 160-38 132-82c43-24 105-16 145 5l91 62 124 20v81H-30Z" fill="#e2e5e7"/>
+          <path d="m135 122 133-75c34-18 88-15 120 4l76 54Z" stroke="#a3abb2" stroke-width="9"/>
+          <path d="m299 38-13 74m77-65 46 62" stroke="#afb5ba" stroke-width="8"/>
+          <path d="M-10 170c160-40 350-46 620-81l-4 36C387 150 202 192-10 224Z" fill="#ff8627"/>
+          <path d="m-10 156 617-76M-10 196l617-75" stroke="#54c4e8" stroke-width="8"/>
+          <circle cx="148" cy="186" r="43" fill="#b5bdc4" stroke="#f7f8fa" stroke-width="8"/>
+          <circle cx="148" cy="186" r="22" stroke="#e8ecef" stroke-width="9"/>
+          <circle cx="459" cy="186" r="43" fill="#b5bdc4" stroke="#f7f8fa" stroke-width="8"/>
+          <circle cx="459" cy="186" r="22" stroke="#e8ecef" stroke-width="9"/>
+        </svg>
+        <div class="card-content">
+          <h1 id="page-title">Connexion</h1>
+          <form id="login-form">
+            <div class="field">
+              <label for="email">Login</label>
+              <input id="email" name="email" type="email" autocomplete="username" placeholder="prenom.nom@leoni.com" required>
+            </div>
+            <div class="field">
+              <label for="password">Mot de passe</label>
+              <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+            <button id="login-button" type="submit" disabled>
+              <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+              <span>Se connecter</span>
+            </button>
+          </form>
+          <p id="status" role="status" aria-live="polite" aria-atomic="true">Chargement de la connexion…</p>
+          <noscript><p class="error-message">Activez JavaScript pour vous connecter.</p></noscript>
+        </div>
+      </section>
+      <footer>© Created by OPEX</footer>
+    </main>
+
+    <div id="dashboard-page" class="dashboard" hidden>
+      <header class="dashboard-header">
+        <span class="dashboard-brand-icon" aria-hidden="true">
+          <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+        </span>
+        <h1>Kosu Audit</h1>
+      </header>
+      <nav class="sidebar" aria-label="Navigation principale">
+        <button class="nav-button" type="button" data-section="Saisie" aria-label="Saisie" title="Saisie" aria-pressed="false">
+          <i class="bi bi-pencil-square" aria-hidden="true"></i>
+        </button>
+        <button class="nav-button is-active" type="button" data-section="Tableau de bord" aria-label="Tableau de bord" title="Tableau de bord" aria-pressed="true">
+          <i class="bi bi-speedometer2" aria-hidden="true"></i>
+        </button>
+        <button class="nav-button" type="button" data-section="Calendrier" aria-label="Calendrier" title="Calendrier" aria-pressed="false">
+          <i class="bi bi-calendar3" aria-hidden="true"></i>
+        </button>
+        <button class="nav-button" type="button" data-section="Réglages" aria-label="Réglages" title="Réglages" aria-pressed="false">
+          <i class="bi bi-sliders" aria-hidden="true"></i>
+        </button>
+        <button class="nav-button nav-trash" type="button" data-section="Corbeille" aria-label="Corbeille" title="Corbeille" aria-pressed="false">
+          <i class="bi bi-trash" aria-hidden="true"></i>
+        </button>
+        <button id="logout-button" class="nav-button nav-logout" type="button" aria-label="Se déconnecter" title="Se déconnecter">
+          <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+        </button>
+      </nav>
+      <main class="dashboard-content" aria-label="Espace Kosu Audit">
+        <p id="dashboard-status" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+        <section class="workspace-panel" data-panel="Saisie" aria-labelledby="entry-title" hidden>
+          <h2 id="entry-title">Saisie</h2>
+          <p id="entry-hint" class="panel-hint">Configurez vos projets, segments et lignes ou machines dans Réglages.</p>
+          <div id="entry-selection" class="selection-grid">
+            <div class="field">
+              <label for="entry-project">1. Section / Projet</label>
+              <select id="entry-project" disabled></select>
+            </div>
+            <div class="field">
+              <label for="entry-segment">2. Segment</label>
+              <select id="entry-segment" disabled></select>
+            </div>
+            <button id="resume-audit" type="button" hidden><i class="bi bi-clipboard-check" aria-hidden="true"></i> Afficher la checklist</button>
+            <div class="field">
+              <label for="entry-line">3. Ligne ou machine</label>
+              <select id="entry-line" disabled></select>
+            </div>
+          </div>
+          <p id="checklist-notice" class="panel-hint" hidden>Aucune checklist n'est configurée pour les projets CRA et WPA.</p>
+          <form id="audit-form" hidden>
+            <div class="audit-header">
+              <div>
+                <span class="audit-eyebrow">AUDIT DE PERFORMANCE</span>
+                <h3 id="audit-title" tabindex="-1">Checklist KOSU</h3>
+                <p id="audit-context"></p>
+              </div>
+              <button id="edit-audit-selection" type="button"><i class="bi bi-pencil" aria-hidden="true"></i> Modifier la sélection</button>
+            </div>
+            <div class="audit-overview">
+              <p>Évaluez chaque point : <strong>OK</strong> conforme · <strong>NOK</strong> non conforme · <strong>NA</strong> non applicable.</p>
+              <div class="audit-progress-header"><span>Progression</span><strong id="audit-count" aria-live="polite">0 / 10 points</strong></div>
+              <progress id="audit-progress" max="10" value="0" aria-label="Points renseignés"></progress>
+              <div class="audit-score" role="status" aria-live="polite" aria-atomic="true">
+                <i class="bi bi-patch-check" aria-hidden="true"></i>
+                <div><span>Taux de conformité</span><strong id="audit-score">En attente</strong><small id="audit-score-detail">OK / (OK + NOK) · NA exclus</small></div>
+              </div>
+            </div>
+            <div id="audit-questions"></div>
+            <div class="audit-footer">
+              <div>
+                <p id="audit-status" role="status" aria-live="polite"></p>
+                <small>Nouvel audit enregistré dans ce navigateur, sans écraser les audits précédents.</small>
+              </div>
+              <button id="save-audit" type="submit"><i class="bi bi-floppy" aria-hidden="true"></i> Enregistrer la checklist</button>
+            </div>
+          </form>
+        </section>
+        <section class="workspace-panel" data-panel="Réglages" aria-labelledby="settings-title" hidden>
+          <h2 id="settings-title">Réglages</h2>
+          <p class="panel-hint">Configurez vos projets, leurs segments et leurs lignes ou machines. Enregistrement dans ce navigateur uniquement, sans synchronisation Firebase.</p>
+          <p id="settings-status" role="status" aria-live="polite" hidden></p>
+          <div class="excel-import">
+            <button id="import-excel" type="button" disabled><i class="bi bi-file-earmark-excel" aria-hidden="true"></i> Importer un fichier Excel</button>
+            <div id="import-actions" hidden>
+              <p id="import-summary" role="status" aria-live="polite"></p>
+              <button id="save-import" type="button">Enregistrer l'import</button>
+              <button id="cancel-import" type="button">Annuler l'import</button>
+            </div>
+            <input id="excel-file" type="file" accept=".xlsx,.xls" aria-label="Fichier Excel à importer" hidden>
+            <p class="panel-hint">Colonnes : <strong>Section</strong>, <strong>Segment</strong>, <strong>Ligne ou machine</strong>. Une ligne par machine ou ligne, avec sa section et son segment répétés. Première feuille uniquement, fichiers .xlsx ou .xls (5 Mo maximum). Ajout sans doublons, sans supprimer les réglages existants.</p>
+          </div>
+          <fieldset id="structure-editor" class="settings-grid">
+            <legend class="visually-hidden">Configuration des projets, segments et lignes</legend>
+            <form id="project-form" class="settings-group">
+              <h3>1. Sections / Projets</h3>
+              <label for="project-name">Nom du nouveau projet</label>
+              <input id="project-name" maxlength="100" required autocomplete="off">
+              <button type="submit">Ajouter le projet</button>
+            </form>
+            <form id="segment-form" class="settings-group">
+              <h3>2. Segments</h3>
+              <label for="settings-project">Projet auquel rattacher le segment</label>
+              <select id="settings-project" disabled></select>
+              <button id="delete-project" class="delete-button" type="button" disabled>Supprimer le projet sélectionné</button>
+              <p id="segment-parent" class="parent-context" aria-live="polite"></p>
+              <label for="segment-name">Nom du nouveau segment</label>
+              <input id="segment-name" maxlength="100" required autocomplete="off" disabled>
+              <button type="submit" disabled>Ajouter le segment</button>
+            </form>
+            <form id="line-form" class="settings-group">
+              <h3>3. Lignes ou machines</h3>
+              <label for="settings-segment">Segment du projet sélectionné</label>
+              <select id="settings-segment" disabled></select>
+              <button id="delete-segment" class="delete-button" type="button" disabled>Supprimer le segment sélectionné</button>
+              <p id="line-parent" class="parent-context" aria-live="polite"></p>
+              <label for="line-name">Nom de la nouvelle ligne ou machine</label>
+              <input id="line-name" maxlength="100" required autocomplete="off" disabled>
+              <button type="submit" disabled>Ajouter la ligne ou machine</button>
+              <label for="settings-line" class="configured-lines-label">Lignes ou machines de ce segment</label>
+              <select id="settings-line" disabled></select>
+              <button id="delete-line" class="delete-button" type="button" disabled>Supprimer la ligne ou machine sélectionnée</button>
+            </form>
+          </fieldset>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
